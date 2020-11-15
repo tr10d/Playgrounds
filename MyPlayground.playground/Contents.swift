@@ -43,3 +43,8 @@ resultSum = sum * pow(1 + percent / 100, year) // Сумма после year л�
 
 print("Задание 3")
 print("Сумма после \(year) лет: \(resultSum)")
+
+
+
+
+// Тест PR
