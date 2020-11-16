@@ -43,21 +43,16 @@ print("Массв из 100 элементов: \(result3.description)")
 
 
 //4. Удалить из этого массива все четные числа и все числа, которые не делятся на 3.
-func deleteItems(array: [Int]) {
+func deleteItems(array: [Int]) -> [Int] {
     
     var newArray = [Int]()
     
     for i in 0..<array.count {
-        switch array[i] {
-        case :
-            <#code#>
-        default:
-            <#code#>
-        }
-        if isEvenNumber {
+         if !isEvenNumber(Number: array[i]) && !isDivisibilityBy3(Number: array[i]){
             newArray.append(array[i])
         }
     }
+    return newArray
 }
 
 let result4 = deleteItems(array: result3)
