@@ -1,45 +1,44 @@
 import UIKit
+import Foundation
 
-let A, B, C, K1, K2, G, sum,percent, year: Double
-var D, D1, D2, H, P, S, X1, X2, resultSum: Double
-let noResult = "нет решения"
+//let array = [1,3,4,5,6,7,8,9,10]
+//let p = array.filter( $0 % 2 == 0)
 
-// Задание 1
-// Ax2 + Bx + C = 0
-A = 3
-B = -14
-C = -5
 
-D = pow(B, 2) - 4 * A * C
-D1 = sqrt(D) / (2 * A)
-D2 = -B / (2 * A)
+func isEvenNumberr(Number: Int) -> Bool {
+    return Number % 2 == 0
+}
+let Number = 11
+let result = isEvenNumberr(Number: Number) ? "четное" : "не четное"
 
-X1 = D2 + D1 // решение 1
-X2 = D2 - D1 // решение 2
+print("Число '\(Number)' \(result)")
 
-print("Задание 1")
-print("X1:  \(X1)")
-print("X2:  \(X2)")
 
-// Задание 2
-K1 = 3 // Катет 1
-K2 = 4 // Катет 2
 
-H = sqrt(pow(K1, 2) + pow(K2, 2)) // Гипотенуза
-P = K1 + K2 + H // Периметр
-S = K1 * K2 / 2 // Площадь
+func isPrimeNumber(Number: Int) -> Bool {
+    return Number % 2 == 0
+}
 
-print("Задание 2")
-print("Гипотенуза:  \(H)")
-print("Периметр:  \(P)")
-print("Площадь:  \(S)")
 
-// Задание 3
-sum = 10000 // Первоначальная сумма
-percent = 10 // Процент в год
-year = 5 // количество лет
 
-resultSum = sum * pow(1 + percent / 100, year) // Сумма после year лет
 
-print("Задание 3")
-print("Сумма после \(year) лет: \(resultSum)")
+
+
+func fibonacciNumbers(amountOfNumbers: Int) -> [Int] {
+    
+    var array = [Int]()
+    for index in 0..<amountOfNumbers {
+        if index < 2 {
+            array.append(1)
+        } else {
+            array.append(array[index - 1] + array[index - 2])
+       }
+    }
+    
+   return array
+}
+let amountOfNumbers = 50
+let Numbers = fibonacciNumbers(amountOfNumbers: amountOfNumbers)
+
+print("\(amountOfNumbers) чисел Фибонначи : \(Numbers.description)")
+
