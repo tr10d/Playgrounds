@@ -1,95 +1,186 @@
-import UIKit
+//import UIKit
 import Foundation
 
-var Number: Int
+//var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+//let Arr = [10...20]
+//
+//print(Arr)
+//
+//extension Array where Element == Int {
+//
+//    func timesTen() -> [Int] {
+//        var output = [Int]()
+//        for num in self {
+//            output.append(num * 10)
+//        }
+//        return output
+//    }
+//}
+//
+//
+//print(numbers.timesTen())
+//print(numbers)
+//
+//
+//func timesTen(_ x: Int) -> Int {
+//    return x * 10
+//}
+//
+//
+//print(numbers.map(timesTen))
+//print(numbers)
+//
+//
+//print(numbers.map { $0 * 10 })
+//print(numbers.map { x in x * 10 })
+//print(numbers)
+//
+//let possibleNumbers = ["1", "2", "three", "///4///", "5"]
+//let mapped = possibleNumbers.map {str in Int(str) }
+//print (mapped) // [Optional(1), Optional(2), nil, nil, Optional(5)]
+//let compactMapped = possibleNumbers.compactMap(Int.init)
+//print (compactMapped) // [1, 2, 5]
+//
+//print(Int.init("123"))
+//
+//let value: Int? = 4
+//if let value = value {
+//   print("\(value) \(type(of: value))")
+//} else {
+//    print("\(value) \(type(of: value))")
+//}
+//
+//enum LocalError: String {
+//    case noData = "Нет данных"
+//    case noConnect = "Нет конн"
+//}
+//let err = LocalError.init(rawValue: "Нет конн")
+//print(err)
+//
+//
+//
+//
+//struct Friend {
+//
+//    let name: String
+//    let userName: String
+////    let age: Int?
+////    let city: String?
+////    let isVIP: Bool
+//
+//    init(name: String) {
+//        self.name = name
+//        self.userName = name
+//    }
+//    init(userName: String) {
+//        self.name = userName
+//        self.userName = userName
+//    }
+//
+//}
+//
+//let f1 = Friend.init(userName: "ff")
+//let f2 = Friend(name: "df")
+//
+//
+//func x(age: Int) {
+//
+//    guard age > 1 else {
+//        return
+//    }
+//}
 
-//1. Написать функцию, которая определяет, четное число или нет.
-func isEvenNumber(Number: Int) -> Bool {
-    return Number % 2 == 0
+
+//1. Описать несколько структур – любой легковой автомобиль SportCar и любой грузовик TrunkCar.
+//
+//2. Структуры должны содержать марку авто, год выпуска, объем багажника/кузова, запущен ли двигатель, открыты ли окна, заполненный объем багажника.
+//
+//3. Описать перечисление с возможными действиями с автомобилем: запустить/заглушить двигатель, открыть/закрыть окна, погрузить/выгрузить из кузова/багажника груз определенного объема.
+//
+//4. Добавить в структуры метод с одним аргументом типа перечисления, который будет менять свойства структуры в зависимости от действия.
+//
+//5. Инициализировать несколько экземпляров структур. Применить к ним различные действия.
+//
+//6. Вывести значения свойств экземпляров в консоль.
+
+//enum Enum1: Int {
+//    case N1 = 1
+//    case N2 = 2
+//    case N3 = 3
+//}
+//struct St {
+//    var I: Int
+//}
+//
+//enum Paradigm {
+//    case functional
+//    case protocolOriented
+//    case objectOriented
+//    case imperative
+//    case declarativeProgramming
+//}
+//struct ProgrammingLanguage {
+//    let paradigm: [Paradigm]
+//    let designedBy: [String]
+//}
+//
+//let Swift = ProgrammingLanguage()
+
+enum TypeAttach {
+    case file
+    case text
 }
-Number = 11
-let result1 = isEvenNumber(Number: Number) ? "четное" : "не четное"
-print("Число '\(Number)' \(result1)")
 
 
-//2. Написать функцию, которая определяет, делится ли число без остатка на 3.
-func isDivisibilityBy3(Number: Int) -> Bool {
-    return Number % 3 == 0
-}
-Number = 13
-let result2 = isDivisibilityBy3(Number: Number) ? "делится" : "не делится"
-print("Число '\(Number)' \(result2) на 3")
-
-
-//3. Создать возрастающий массив из 100 чисел.
-func generateArray(_ Number: Int) -> [Int] {
+struct Emailletter {
     
-    var array = [Int]()
+    let from: String
+    let to: String
+    let subject: String
     
-    for i in 1...Number {
-        array.append(i)
+    var files = [String]()
+    var text = ""
+    var date = NSDate() as Date
+    
+//    init(from: String, to: String, subject: String) {
+//        self.from = from
+//        self.to = to
+//        self.subject = subject
+////        files = []
+//    }
+    mutating func send() {
+        date = NSDate() as Date
+        print("Писмо отправлено")
     }
     
-    return array
-}
-let result3 = generateArray(100)
-print("Массв из 100 элементов: \(result3.description)")
-
-
-//4. Удалить из этого массива все четные числа и все числа, которые не делятся на 3.
-func deleteItems(array: [Int]) -> [Int] {
-    
-    var newArray = [Int]()
-    
-    for i in 0..<array.count {
-         if !isEvenNumber(Number: array[i]) && !isDivisibilityBy3(Number: array[i]){
-            newArray.append(array[i])
+    mutating func add(type: TypeAttach, object: String) {
+        switch type {
+        case .text:
+            self.text = object
+        case .file:
+            files.append(object)
         }
-    }
-    return newArray
-}
-let result4 = deleteItems(array: result3)
-
-
-// 5. * Написать функцию, которая добавляет в массив новое число Фибоначчи, и добавить при помощи нее 100 элементов. Числа Фибоначчи определяются соотношениями Fn=Fn-1 + Fn-2.
-func addFibonacciNumber(array: inout [Double]) {
-    let count = array.count
-    if count < 2 {
-            array.append(1)
-        } else {
-            array.append(array[count - 1] + array[count - 2])
-        }
-}
-let amountOfNumbers = 100
-var result5 = [Double]()
-for _ in 1...amountOfNumbers {
-    addFibonacciNumber(array: &result5)
-}
-print("\(amountOfNumbers) чисел Фибонначи : \(result5)")
-
-
-/* 6. * Заполнить массив из 100 элементов различными простыми числами. Натуральное число, большее единицы, называется простым, если оно делится только на себя и на единицу. Для нахождения всех простых чисел не больше заданного числа n, следуя методу Эратосфена, нужно выполнить следующие шаги:
-a. Выписать подряд все целые числа от двух до n (2, 3, 4, ..., n).
-b. Пусть переменная p изначально равна двум — первому простому числу.
-c. Зачеркнуть в списке числа от 2 + p до n, считая шагом p..
-d. Найти первое не зачёркнутое число в списке, большее, чем p, и присвоить значению переменной p это число.
-e. Повторять шаги c и d, пока возможно. */
-func getPrimeNumbers(_ array: inout [Int]) {
-    var P:Int
+     }
     
-    for i in 1..<array.count {
-         if array[i] > 0 {
-            P = array[i] * array[i]
-            while P <= array.count {
-                array[P - 1] = 0
-                P += array[i]
-            }
-        }
+    func description() -> String {
+        return
+            """
+            From: \(from)
+            To: \(to)
+            Date: \(String(describing: date))
+            Subject: \(subject)
+            \(text)
+            Files: \(files)
+            """
     }
 }
-let amountPrimeNumber = 100
-var array = generateArray(amountPrimeNumber)
-getPrimeNumbers(&array)
-let result6 = array
-    .filter { $0 > 1 }
-print("Простые числа до \(amountPrimeNumber): \(result6)")
+
+var eletter1 = Emailletter(from: "aa@host.net", to: "bb@host.net", subject: "Test")
+eletter1.add(type: .text, object: "Тестовое сообщение")
+eletter1.add(type: .file, object: "Тестовый файл №1")
+eletter1.add(type: .file, object: "Тестовый файл №2")
+eletter1.send()
+
+print(eletter1.description())
+
+
