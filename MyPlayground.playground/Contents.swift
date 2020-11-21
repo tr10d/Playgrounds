@@ -13,58 +13,63 @@ import Foundation
 //6. Вывести значения свойств экземпляров в консоль.
 
 enum TypeAttach {
-    case file
-    case text
+    case file(_ file: String)
+    case text(_ text: String)
+    case subject(_ subject: String)
 }
 
 struct Emailletter {
-    
-    let from: String
-    let to: String
-    let subject: String
-    
+    let from, to: String
+    var subject = ""
     var files = [String]()
     var text = ""
     var date = NSDate() as Date
     
-//    func ini() {
-//        
-//    }
+    init(from: String, to: String) {
+        self.from = from
+        self.to = to
+    }
     
+    mutating func add(_ type: TypeAttach) {
+        switch type {
+        case let .text(text):
+            self.text = text
+        case let .file(file):
+            files.append(file)
+        case let .subject(subject):
+            self.subject = subject
+       }
+     }
     
     mutating func send() {
-        date = NSDate() as Date
         print("Писмо отправлено")
     }
     
-    mutating func add(type: TypeAttach, object: String) {
-        switch type {
-        case .text:
-            self.text = object
-        case .file:
-            files.append(object)
+    func presentation() {
+        print("From: \(from)")
+        print("To: \(to)")
+        print("Date: \(String(describing: date))")
+        if !subject.isEmpty {
+            print("Subject: \(subject)")
         }
-     }
-    
-    func description() -> String {
-        return
-            """
-            From: \(from)
-            To: \(to)
-            Date: \(String(describing: date))
-            Subject: \(subject)
-            \(text)
-            Files: \(files)
-            """
+        print("\(text)")
+        if !files.isEmpty {
+            print("Files: \(files)")
+        }
     }
+    
 }
 
-var letter1 = Emailletter(from: "aa@host.net", to: "bb@host.net", subject: "Test")
-letter1.add(type: .text, object: "Тестовое сообщение")
-letter1.add(type: .file, object: "Тестовый файл №1")
-letter1.add(type: .file, object: "Тестовый файл №2")
-letter1.send()
+var letter: Emailletter
+    
+letter = Emailletter(from: "aa@host.net", to: "bb@host.net")
+letter.add(.text("Тестовое сообщение"))
+letter.add(.file("Тестовый файл №1"))
+letter.add(.file("Тестовый файл №2"))
+letter.send()
+letter.presentation()
 
-print(eletter1.description())
-
-var letter2 = Emailletter(from: "bb@host.net", to: String"aa@host.net", subject: "", text: "Hello, world")
+letter = Emailletter(from: "bb@host.net", to: "aa@host.net")
+letter.add(.text("Hello, world"))
+letter.send()
+letter.presentation()
