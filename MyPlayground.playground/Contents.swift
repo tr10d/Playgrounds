@@ -1,6 +1,7 @@
 import Foundation
 
 typealias Coordinate = (Int, Int)
+typealias Cells = [[Piece?]]
 
 enum Colors {
     case white, black
@@ -9,17 +10,31 @@ enum Colors {
 protocol Piece: CustomStringConvertible {
     var color: Colors { get set }
     var pic: (Character, Character) { get set }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool
 }
 
 extension Piece {
     var description: String {
         return "\(color == .white ? pic.0 : pic.1)"
     }
+    
+    func isEmpty(_ coordinate: Coordinate, _ cells: Cells) -> Bool {
+        if let piece = cells[coordinate.0][coordinate.1] {
+            return piece.color != color
+        }
+        return true
+    }
+    
+    func hasMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return isEmpty(to, cells)
+            && canMove(from: from, to: to, cells: cells)
+            && canCross(from: from, to: to, cells: cells)
+    }
 }
 
 class Board: CustomStringConvertible {
-    var cells: [[Piece?]]
+    var cells: Cells
     var description: String{
         var string = ""
         for y in 0...7 {
@@ -43,6 +58,7 @@ class Board: CustomStringConvertible {
         //    ♟♟♟♟♟♟♟♟
         //    ♜♞♝♚♛♝♞♜
     }
+    
     init() {
         cells = Array(repeating: [], count: 8)
         for i in 0..<8 {
@@ -73,38 +89,54 @@ class Board: CustomStringConvertible {
             cells[i][7] = Queen(color: .black)
         }
   }
-    func move(from: String, to: String) {
-        let x = str2Coordinate(str: from)
-        let y = str2Coordinate(str: to)
-        if let piece = cells[x.0][x.1] {
-            if piece.hasMove(from: x, to: y) {
+    
+    func move(_ from: String, _ to: String) {
+        if let x = str2Coordinate(string: from),
+           let y = str2Coordinate(string: to),
+           let piece = cells[x.0][x.1] {
+            if piece.hasMove(from: x, to: y, cells: cells) {
                 cells[y.0][y.1] = piece
                 cells[x.0][x.1] = nil
             }
         }
     }
-    func str2Coordinate(str: String) -> Coordinate {
+    
+    func str2Coordinate(string: String) -> Coordinate? {
         let dictionary: [Character: Int] = [
             "a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7,
-            "A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7,
             "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5, "7": 6, "8": 7
         ]
-        let xy = Array(str)
-        if let x = dictionary[xy[0]], let y = dictionary[xy[1]] {
+        let array = Array(string.lowercased())
+        if array.count == 2, let x = dictionary[array[0]], let y = dictionary[array[1]] {
             return (x, y)
         }
-        return (0, 0)
+        return nil
     }
 }
 
 class Pawn: Piece {
     var pic: (Character, Character)
     var color: Colors
+    
     init(color: Colors) {
         self.color = color
         self.pic = ("♟", "♙")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return true
+        let k = (color == .white ? 1 : -1)
+        var kk = 1
+        switch (color, from.1) {
+        case (.white, 1), (.black, 6):
+           kk = 2
+        default:
+           kk = 1
+        }
+        return abs(from.0 - to.0) == 1 && abs(to.1 - from.1) <= kk * k
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
@@ -112,11 +144,17 @@ class Pawn: Piece {
 class Rook: Piece {
     var pic: (Character, Character)
     var color: Colors
+    
     init(color: Colors) {
         self.color = color
         self.pic = ("♜", "♖")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return true
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
@@ -124,11 +162,17 @@ class Rook: Piece {
 class Knight: Piece {
     var pic: (Character, Character)
     var color: Colors
+    
     init(color: Colors) {
         self.color = color
         self.pic = ("♞", "♘")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return true
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
@@ -140,7 +184,11 @@ class Bishop: Piece {
         self.color = color
         self.pic = ("♝", "♗")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return true
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
@@ -148,11 +196,17 @@ class Bishop: Piece {
 class Queen: Piece {
     var pic: (Character, Character)
     var color: Colors
+    
     init(color: Colors) {
         self.color = color
         self.pic = ("♛", "♕")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return true
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
@@ -160,16 +214,26 @@ class Queen: Piece {
 class King: Piece {
     var pic: (Character, Character)
     var color: Colors
+    
     init(color: Colors) {
         self.color = color
         self.pic = ("♚", "♔")
     }
-    func hasMove(from: Coordinate, to: Coordinate) -> Bool {
+    
+    func canMove(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
+        return abs(from.0 - to.0) == 1 && abs(from.1 - to.1) == 1
+    }
+
+    func canCross(from: Coordinate, to: Coordinate, cells: Cells) -> Bool {
         return true
     }
 }
 
 let board = Board()
 print(board)
-board.move(from: "E2", to: "e4")
+board.move("E2", "e4")
+print(board)
+board.move("e7", "e5")
+print(board)
+board.move("e19", "e5")
 print(board)
