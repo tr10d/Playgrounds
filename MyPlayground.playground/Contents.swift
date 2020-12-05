@@ -26,10 +26,10 @@ func parseEmail(email: String) throws -> Email {
     guard localPart.range(of: "[a-zA-Z0-9!#$%&'*+-/=?^_`{|}~.]*", options: .regularExpression) != nil else {
         throw EMailParsingError.invalidCharLocalPart
     }
-    guard localPart.range(of: #"\.{2,}"#, options: .regularExpression) != nil else {
+    guard localPart.range(of: #"\.{2,}"#, options: .regularExpression) == nil else {
         throw EMailParsingError.invalidCharLocalPart
     }
-    guard localPart.range(of: #"^\.|\.$"#, options: .regularExpression) != nil else {
+    guard localPart.range(of: #"^\.|\.$"#, options: .regularExpression) == nil else {
         throw EMailParsingError.invalidCharLocalPart
     }
 
@@ -42,7 +42,7 @@ func parseEmail(email: String) throws -> Email {
 }
 
 do {
-    print(try parseEmail(email: "@"))
+    print(try parseEmail(email: "simple@example.com"))
 } catch let error as EMailParsingError {
     switch error {
     case .invalidLocalPart:
