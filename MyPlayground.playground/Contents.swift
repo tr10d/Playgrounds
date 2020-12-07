@@ -1,62 +1,63 @@
 import Foundation
 
-class Sequence<T> {
-    enum TypeOfPop {
-        case fifo, lifo
-    }
-    
-    var array = [T]()
-    
-    func push(_ element: T) -> Self {
-        array.append(element)
-        return self
-    }
-    
-    func pop(_ type: TypeOfPop) -> T? {
-        switch type {
-        case .fifo:
-            return array.popLast()
-        case .lifo:
-            return array.removeFirst()
-        }
-    }
-    
-    func filter(_ condition: (T) -> Bool) -> [T] {
-        var result = [T]()
-        for item in array {
-            if condition(item) {
-                result.append(item)
-            }
-        }
-        return result
-    }
-    
-    subscript(index: Int) -> T? {
-        return array.count > index ? array[index] : nil
-    }
+enum EMailParsingError: Error {
+    case invalidLocalPart, invalidCharLocalPart
+    case invalidDomain, invalidCharDomain
+    case internalError
+    case noParts(Int)
 }
 
-extension String {
-    
-    subscript(_ index: Int) -> Character? {
-        if self.count > index {
-            return self[self.index(self.startIndex, offsetBy: index)]
-        } else {
-            return nil
-        }
-    }
+struct Email {
+    let localPart: String
+    let domain: String
 }
 
-let a = Sequence<String> ()
-a.push("1").push("2").push("3").pop(.lifo)
+func parseEmail(email: String) throws -> Email {
 
-let b = Sequence<Int> ()
-for x in 0...11 { b.push(x) }
-b.pop(.fifo)
+    let splitEmail = email.split(separator: "@")
+    
+    guard !splitEmail.contains("@") else { throw EMailParsingError.internalError }
+    guard splitEmail.count == 2 else { throw EMailParsingError.noParts(splitEmail.count) }
+    
+    let localPart = String(splitEmail[0])
+    let domain = String(splitEmail[1])
+    
+    guard localPart.count <= 64 else { throw EMailParsingError.invalidLocalPart }
+    guard localPart.range(of: "[a-zA-Z0-9!#$%&'*+-/=?^_`{|}~.]*", options: .regularExpression) != nil else {
+        throw EMailParsingError.invalidCharLocalPart
+    }
+    guard localPart.range(of: #"\.{2,}"#, options: .regularExpression) == nil else {
+        throw EMailParsingError.invalidCharLocalPart
+    }
+    guard localPart.range(of: #"^\.|\.$"#, options: .regularExpression) == nil else {
+        throw EMailParsingError.invalidCharLocalPart
+    }
 
-let c = a[0]
-let d = b.filter { $0 > 3 && $0 < 7 }
+    guard domain.count <= 255 else { throw EMailParsingError.invalidDomain }
+    guard domain.range(of: "[a-zA-Z0-9!#$%&'*+-/=?^_`{|}~.]*", options: .regularExpression) != nil else {
+        throw EMailParsingError.invalidCharDomain
+    }
+    
+    return Email(localPart: localPart, domain: domain)
+}
 
-
-let s = "cafe\u{301}"
-s[3]
+do {
+    print(try parseEmail(email: "simple@example.com"))
+} catch let error as EMailParsingError {
+    switch error {
+    case .invalidLocalPart:
+        print("Длина имени почтового ящика должна быть не более 64 знаков")
+    case .invalidCharLocalPart:
+        print("В имени почтового ящика есть недопустимые символы")
+    case .invalidDomain:
+        print("Длина домена должна быть не более 255 знаков")
+    case .invalidCharDomain:
+        print("В имени домена есть недопустимые символы")
+    case .internalError:
+        print("Отсутствует знак @")
+    case .noParts(let count):
+        print("Не хватает \(2 - count) частей адреса")
+    }
+} catch {
+    print("Неизвестная ошибка: \(error)")
+}
